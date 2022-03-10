@@ -57,23 +57,26 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
     if (_isLargeScreen(context)) {
       return Row(
         children: [
-          Drawer(
-            child: Column(
-              children: [
-                DrawerHeader(
-                  child: Center(
-                    child: widget.title,
+          Expanded(
+            flex: 1,
+            child: Drawer(
+              child: Column(
+                children: [
+                  DrawerHeader(
+                    child: Center(
+                      child: widget.title,
+                    ),
                   ),
-                ),
-                for (var d in widget.destinations)
-                  ListTile(
-                    leading: Icon(d.icon),
-                    title: Text(d.title),
-                    selected:
-                        widget.destinations.indexOf(d) == widget.currentIndex,
-                    onTap: () => _destinationTapped(d),
-                  ),
-              ],
+                  for (var d in widget.destinations)
+                    ListTile(
+                      leading: Icon(d.icon),
+                      title: Text(d.title),
+                      selected:
+                      widget.destinations.indexOf(d) == widget.currentIndex,
+                      onTap: () => _destinationTapped(d),
+                    ),
+                ],
+              ),
             ),
           ),
           VerticalDivider(
@@ -82,6 +85,7 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
             color: Colors.grey[300],
           ),
           Expanded(
+            flex: 9,
             child: Scaffold(
               appBar: AppBar(
                 actions: widget.actions,
@@ -103,18 +107,21 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
         ),
         body: Row(
           children: [
-            NavigationRail(
-              leading: widget.floatingActionButton,
-              destinations: [
-                ...widget.destinations.map(
-                  (d) => NavigationRailDestination(
-                    icon: Icon(d.icon),
-                    label: Text(d.title),
+            Expanded(
+              flex: 1,
+              child: NavigationRail(
+                leading: widget.floatingActionButton,
+                destinations: [
+                  ...widget.destinations.map(
+                        (d) => NavigationRailDestination(
+                      icon: Icon(d.icon),
+                      label: Text(d.title),
+                    ),
                   ),
-                ),
-              ],
-              selectedIndex: widget.currentIndex,
-              onDestinationSelected: widget.onNavigationIndexChange ?? (_) {},
+                ],
+                selectedIndex: widget.currentIndex,
+                onDestinationSelected: widget.onNavigationIndexChange ?? (_) {},
+              ),
             ),
             VerticalDivider(
               width: 1,
@@ -122,6 +129,7 @@ class _AdaptiveScaffoldState extends State<AdaptiveScaffold> {
               color: Colors.grey[300],
             ),
             Expanded(
+              flex: 20,
               child: widget.body!,
             ),
           ],
