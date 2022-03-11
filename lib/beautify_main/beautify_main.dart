@@ -1,6 +1,6 @@
 
 
-import 'package:beautify/beautify_json/beautify_json.dart';
+import 'package:beautify/beautify_json/beautify_tab_json.dart';
 import 'package:beautify/beautify_storage/beautify_storage.dart';
 import 'package:beautify/beautify_time/beautify_time.dart';
 import 'package:beautify/third_party/adaptive_scaffold.dart';
@@ -49,7 +49,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
     );
   }
 
-  final _beautifyJsonWidget = const BeautifyJsonWidget();
+  final _beautifyJsonWidget = const BeautifyTabJsonWidget();
   final _beautifyTimeWidget = const BeautifyTimeWidget();
   final _beautifyStorageWidget = const BeautifyStorageWidget();
 
@@ -66,7 +66,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
       return _beautifyStorageWidget;
     }
 
-    return Text("data_$index");
+    return const Text("setting");
   }
 
 }
