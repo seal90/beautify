@@ -8,7 +8,11 @@ import 'package:pretty_json/pretty_json.dart';
 
 class BeautifyJsonWidget extends StatefulWidget {
 
-  const BeautifyJsonWidget({ Key? key }) : super(key: key);
+  Function identifyStrFunc;
+
+  UniqueKey tabUniqueKey;
+
+  BeautifyJsonWidget(this.tabUniqueKey, this.identifyStrFunc, { Key? key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -206,6 +210,19 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
       children: [
         Row(
           children: [
+            // const Text("identify"),
+            SizedBox(
+              width: 100,
+              height: 25,
+              child: TextField(
+                scrollPadding: const EdgeInsets.all(0.0),
+                onChanged: (value){
+                  setState(() {
+                    widget.identifyStrFunc(widget.tabUniqueKey, value);
+                  });
+                },
+              ),
+            ),
             MaterialButton(
               child: Row(
                 children: [
