@@ -41,11 +41,11 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
     super.initState();
     _nowMillisecondTimer = Timer.periodic(const Duration(seconds: 3), (timer){
       setState(() {
-        _nowMillisecond = DateTime.now().millisecondsSinceEpoch;
+        _nowMillisecond = DateTime.now().toUtc().millisecondsSinceEpoch;
       });
     });
 
-    var nowStr = formatDateTime(DateTime.now());
+    var nowStr = formatDateTime(DateTime.now().toUtc());
     _timeStr2TimestampTextFieldController.text = nowStr;
   }
 
@@ -100,7 +100,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
                   if("s" == _timestamp2TimeStrDropdownValue) {
                     inputIntValue = inputIntValue * 1000;
                   }
-                  var inputDateTime = DateTime.fromMillisecondsSinceEpoch(inputIntValue);
+                  var inputDateTime = DateTime.fromMillisecondsSinceEpoch(inputIntValue).toUtc();
 
                   var inputDateTimeStr = formatDateTime(inputDateTime);
                   setState(() {
@@ -143,7 +143,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
                 var inputValue = _timeStr2TimestampTextFieldController.text;
 
                 try {
-                  var inputDateTime = DateTime.parse(inputValue);
+                  var inputDateTime = DateTime.parse(inputValue).toUtc();
                   int inputDataTimeInt = inputDateTime.millisecondsSinceEpoch;
                   if ("s" == _timeStr2TimestampDropdownValue) {
                     inputDataTimeInt = inputDataTimeInt ~/ 1000;
