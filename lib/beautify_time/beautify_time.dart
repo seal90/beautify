@@ -18,7 +18,9 @@ class BeautifyTimeWidget extends StatefulWidget {
 class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
 
   int _nowMillisecond = 0;
-  Timer? _nowMillisecondTimer;
+  Timer? _nowTimer;
+
+  String _nowDateTime = "";
 
   final _timestamp2TimeStrTextFieldController = TextEditingController();
   final _timeStr2TimestampTextFieldController = TextEditingController();
@@ -39,20 +41,26 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
   @override
   void initState() {
     super.initState();
-    _nowMillisecondTimer = Timer.periodic(const Duration(seconds: 3), (timer){
+    _nowTimer = Timer.periodic(const Duration(seconds: 3), (timer){
       setState(() {
-        _nowMillisecond = DateTime.now().toUtc().millisecondsSinceEpoch;
+        _nowMillisecond = DateTime.now().millisecondsSinceEpoch;
+        _nowDateTime = formatDateTime(DateTime.now());
       });
     });
 
-    var nowStr = formatDateTime(DateTime.now().toUtc());
+    setState(() {
+      _nowMillisecond = DateTime.now().millisecondsSinceEpoch;
+      _nowDateTime = formatDateTime(DateTime.now());
+    });
+
+    var nowStr = formatDateTime(DateTime.now());
     _timeStr2TimestampTextFieldController.text = nowStr;
   }
 
   @override
   void dispose() {
     super.dispose();
-    _nowMillisecondTimer?.cancel();
+    _nowTimer?.cancel();
   }
 
   @override
@@ -61,12 +69,17 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
       children: [
         Row(
           children: const [
-            Text("Time stamp(Does not account for daylight saving time)"),
+            Text("Time"),
           ],
         ),
         Row(
           children: [
-            const Text("Now:"),
+            const Text("Now DateTime: "),
+            SizedBox(
+              width: 180,
+              child: SelectableText(_nowDateTime),
+            ),
+            const Text("Now Millisecond: "),
             SelectableText(_nowMillisecond.toString()),
           ],
         ),
@@ -74,7 +87,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
           children: [
             const Text("Time stamp:"),
             SizedBox(
-              width: 150,
+              width: 180,
               child: TextField(
                 maxLines: 1,
                 keyboardType: TextInputType.number,
@@ -100,7 +113,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
                   if("s" == _timestamp2TimeStrDropdownValue) {
                     inputIntValue = inputIntValue * 1000;
                   }
-                  var inputDateTime = DateTime.fromMillisecondsSinceEpoch(inputIntValue).toUtc();
+                  var inputDateTime = DateTime.fromMillisecondsSinceEpoch(inputIntValue);
 
                   var inputDateTimeStr = formatDateTime(inputDateTime);
                   setState(() {
@@ -110,7 +123,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
               },
             ),
             SizedBox(
-              width: 150,
+              width: 180,
               child: SelectableText(
                   _timestamp2TimeStrResult
               ),
@@ -143,7 +156,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
                 var inputValue = _timeStr2TimestampTextFieldController.text;
 
                 try {
-                  var inputDateTime = DateTime.parse(inputValue).toUtc();
+                  var inputDateTime = DateTime.parse(inputValue);
                   int inputDataTimeInt = inputDateTime.millisecondsSinceEpoch;
                   if ("s" == _timeStr2TimestampDropdownValue) {
                     inputDataTimeInt = inputDataTimeInt ~/ 1000;
@@ -159,7 +172,7 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
               },
             ),
             SizedBox(
-              width: 120,
+              width: 180,
               child: SelectableText(_timeStr2TimestampResult),
             ),
             DropdownButton<String>(
