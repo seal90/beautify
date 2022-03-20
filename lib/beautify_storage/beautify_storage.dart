@@ -168,7 +168,12 @@ class _BeautifyStorageWidgetState extends State<BeautifyStorageWidget> {
         return;
       }
 
-      double doubleValue = double.parse(value);
+      double doubleValue = 0;
+      try {
+        doubleValue = double.parse(value);
+      } catch(e) {
+        return;
+      }
       if('b' != type) {
         var byteValue = _toByte(type, doubleValue);
         _bTextController.text = byteValue.toString();

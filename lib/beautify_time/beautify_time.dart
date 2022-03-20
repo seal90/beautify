@@ -109,13 +109,19 @@ class _BeautifyTimeWidgetState extends State<BeautifyTimeWidget> {
               onPressed: (){
                 String inputValue = _timestamp2TimeStrTextFieldController.value.text;
                 if(inputValue.isNotEmpty) {
-                  var inputIntValue = int.parse(inputValue);
-                  if("s" == _timestamp2TimeStrDropdownValue) {
-                    inputIntValue = inputIntValue * 1000;
-                  }
-                  var inputDateTime = DateTime.fromMillisecondsSinceEpoch(inputIntValue);
+                  var inputDateTimeStr = "";
+                  try {
+                    var inputIntValue = int.parse(inputValue);
+                    if ("s" == _timestamp2TimeStrDropdownValue) {
+                      inputIntValue = inputIntValue * 1000;
+                    }
+                    var inputDateTime = DateTime.fromMillisecondsSinceEpoch(
+                        inputIntValue);
 
-                  var inputDateTimeStr = formatDateTime(inputDateTime);
+                    inputDateTimeStr = formatDateTime(inputDateTime);
+                  } catch(e) {
+
+                  }
                   setState(() {
                     _timestamp2TimeStrResult = inputDateTimeStr;
                   });
