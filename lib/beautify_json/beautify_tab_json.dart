@@ -19,9 +19,13 @@ class _BeautifyTabJsonWidgetState extends State<BeautifyTabJsonWidget> {
 
   TabbedViewController controller = TabbedViewController([]);
 
+  int num = 1;
+
+  bool firstInitFlag = true;
+
   @override
   Widget build(BuildContext context) {
-    int num = 1;
+    _firstInit();
     TabbedView tabbedView = TabbedView(
       controller: controller,
       tabsAreaButtonsBuilder: (context, tabsCount) {
@@ -29,12 +33,7 @@ class _BeautifyTabJsonWidgetState extends State<BeautifyTabJsonWidget> {
         buttons.add(TabButton(
             icon: IconProvider.data(Icons.add),
             onPressed: () {
-              String identifyStr = 'tab___$num';
-              num++;
-              var tabData = TabData(text: identifyStr,);
-              UniqueKey tabKey = tabData.uniqueKey;
-              tabData.content = BeautifyJsonWidget(tabKey, _identifyStrStateFunc);
-              controller.addTab(tabData);
+              _crateTabJson();
             }));
         if (tabsCount > 0) {
           buttons.add(TabButton(
@@ -49,6 +48,24 @@ class _BeautifyTabJsonWidgetState extends State<BeautifyTabJsonWidget> {
       },
     );
     return tabbedView;
+  }
+
+  void _crateTabJson() {
+    String identifyStr = 'tab___$num';
+    num++;
+    var tabData = TabData(text: identifyStr,);
+    UniqueKey tabKey = tabData.uniqueKey;
+    tabData.content = BeautifyJsonWidget(tabKey, _identifyStrStateFunc);
+    controller.addTab(tabData);
+  }
+
+  void _firstInit() {
+    if(firstInitFlag) {
+      for (int i = 0; i < 5; i++) {
+        _crateTabJson();
+      }
+    }
+    firstInitFlag = false;
   }
 
   void _identifyStrStateFunc(UniqueKey tabKey, String value){
