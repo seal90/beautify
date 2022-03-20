@@ -1,5 +1,6 @@
 
 
+import 'package:beautify/beautify_base64/beautify_base64.dart';
 import 'package:beautify/beautify_json/beautify_tab_json.dart';
 import 'package:beautify/beautify_storage/beautify_storage.dart';
 import 'package:beautify/beautify_time/beautify_time.dart';
@@ -36,6 +37,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
         AdaptiveScaffoldDestination(title: 'JSON', icon: Icons.brightness_1_outlined),
         AdaptiveScaffoldDestination(title: 'Time', icon: Icons.access_time),
         AdaptiveScaffoldDestination(title: 'Storage', icon: Icons.storage_outlined),
+        AdaptiveScaffoldDestination(title: 'Base64', icon: Icons.backpack_outlined),
         AdaptiveScaffoldDestination(title: 'Setting', icon: Icons.settings),
       ],
       body: _pageAtIndex(_pageIndex),
@@ -64,6 +66,10 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
 
     if (index == 2) {
       return _beautifyStorageWidget;
+    }
+
+    if(index == 3) {
+      return const BeautifyBase64Widget();
     }
 
     return const Text("setting");
