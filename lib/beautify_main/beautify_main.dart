@@ -51,7 +51,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
     );
   }
 
-  final _beautifyJsonWidget = const BeautifyTabJsonWidget();
+  final _beautifyJsonWidget = BeautifyTabJsonWidget();
   final _beautifyTimeWidget = const BeautifyTimeWidget();
   final _beautifyStorageWidget = const BeautifyStorageWidget();
 

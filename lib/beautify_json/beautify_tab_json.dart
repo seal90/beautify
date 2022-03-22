@@ -6,7 +6,13 @@ import 'beautify_json.dart';
 
 class BeautifyTabJsonWidget extends StatefulWidget {
 
-  const BeautifyTabJsonWidget({Key? key}) : super(key: key);
+  BeautifyTabJsonWidget({Key? key}) : super(key: key);
+
+  final TabbedViewController controller = TabbedViewController([]);
+
+  bool firstInitFlag = true;
+
+  int num = 1;
 
   @override
   State<StatefulWidget> createState() {
@@ -19,9 +25,16 @@ class _BeautifyTabJsonWidgetState extends State<BeautifyTabJsonWidget> {
 
   TabbedViewController controller = TabbedViewController([]);
 
-  int num = 1;
+  bool get firstInitFlag => widget.firstInitFlag;
 
-  bool firstInitFlag = true;
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.controller;
+    for(TabData tabData in controller.tabs) {
+      (tabData.content as BeautifyJsonWidget).identifyStrFunc = _identifyStrStateFunc2;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +64,12 @@ class _BeautifyTabJsonWidgetState extends State<BeautifyTabJsonWidget> {
   }
 
   void _crateTabJson() {
-    String identifyStr = 'tab___$num';
-    num++;
+    String identifyStr = 'tab___${widget.num}';
+    widget.num++;
     var tabData = TabData(text: identifyStr,);
     UniqueKey tabKey = tabData.uniqueKey;
-    tabData.content = BeautifyJsonWidget(tabKey, _identifyStrStateFunc);
-    controller.addTab(tabData);
+    tabData.content = BeautifyJsonWidget(identifyStr, _identifyStrStateFunc2);
+    widget.controller.addTab(tabData);
   }
 
   void _firstInit() {
@@ -65,7 +78,15 @@ class _BeautifyTabJsonWidgetState extends State<BeautifyTabJsonWidget> {
         _crateTabJson();
       }
     }
-    firstInitFlag = false;
+    widget.firstInitFlag = false;
+  }
+
+  void _identifyStrStateFunc2(String value){
+    int index = controller.selectedIndex ?? 0;
+    setState(() {
+      controller.tabs[index].text = value;
+    });
+
   }
 
   void _identifyStrStateFunc(UniqueKey tabKey, String value){

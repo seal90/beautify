@@ -8,11 +8,17 @@ import 'package:pretty_json/pretty_json.dart';
 
 class BeautifyJsonWidget extends StatefulWidget {
 
-  Function identifyStrFunc;
+  ValueChanged<String> identifyStrFunc;
 
-  UniqueKey tabUniqueKey;
+  String identifyStr;
 
-  BeautifyJsonWidget(this.tabUniqueKey, this.identifyStrFunc, { Key? key }) : super(key: key);
+  Map<String, dynamic> beautifyJsonData = {};
+
+  bool formatInputEnabled = false;
+
+  String sourceStr = "";
+
+  BeautifyJsonWidget(this.identifyStr, this.identifyStrFunc, { Key? key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -25,9 +31,14 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
 
   final TextEditingController _textEditingController = TextEditingController();
 
-  Map<String, dynamic> beautifyJsonData = {};
+  final TextEditingController _identifyEditingController = TextEditingController();
 
-  bool formatInputEnabled = false;
+  @override
+  void initState() {
+    super.initState();
+    _identifyEditingController.text = widget.identifyStr;
+    _textEditingController.text = widget.sourceStr;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +64,13 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
       );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    widget.sourceStr = _textEditingController.text;
+    widget.identifyStr = _identifyEditingController.text;
+  }
+
   void _formatInputChange() {
     setState(() {
       _beautifyInput();
@@ -60,19 +78,14 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   }
 
   void _beautifyInput() {
-    String prettyStr = prettyJson(beautifyJsonData, indent: 2);
+    String prettyStr = prettyJson(widget.beautifyJsonData, indent: 2);
 
-    _textEditingController.value = TextEditingValue(
-      text: prettyStr,
-      composing: _textEditingController.value.composing,
-      selection: _textEditingController.value.selection,
-    );
+    _textEditingController.text = prettyStr;
   }
 
-  /// 开启格式化输入内容
   void _formatInputEnabledChange() {
     setState(() {
-      formatInputEnabled = !formatInputEnabled;
+      widget.formatInputEnabled = !widget.formatInputEnabled;
     });
   }
 
@@ -82,7 +95,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
-          borderRadius:const BorderRadius.all(//圆角
+          borderRadius:const BorderRadius.all(
             Radius.circular(5.0),
           ),
         ),
@@ -91,7 +104,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: JsonView.map(
-            beautifyJsonData,
+            widget.beautifyJsonData,
             theme: const JsonViewTheme(
               keyStyle: TextStyle(
                 color: Colors.black54,
@@ -151,7 +164,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
             ],
           ),
           onPressed: (){
-            String prettyStr = prettyJson(beautifyJsonData, indent: 2);
+            String prettyStr = prettyJson(widget.beautifyJsonData, indent: 2);
             Clipboard.setData(ClipboardData(text: prettyStr));
           }
         ),
@@ -170,13 +183,10 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         autofocus: true,
         cursorColor: Colors.blue,
         decoration: const InputDecoration(
-          hintText: '需要美化的字符串',
-          // labelText: '字符串',
-          // 未获得焦点下划线设为灰色
+          hintText: 'To Beautify String',
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
-          //获得焦点下划线设为蓝色
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.blue),
           ),
@@ -191,11 +201,11 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   void _toBeautifyJsonData(String text) {
     setState(() {
       if(text.isEmpty) {
-        beautifyJsonData = {};
+        widget.beautifyJsonData = {};
       } else {
         try {
-          beautifyJsonData = jsonDecode(text);
-          if(formatInputEnabled) {
+          widget.beautifyJsonData = jsonDecode(text);
+          if(widget.formatInputEnabled) {
             _beautifyInput();
           }
         } catch (e) {
@@ -210,15 +220,15 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
       children: [
         Row(
           children: [
-            // const Text("identify"),
             SizedBox(
               width: 100,
               height: 25,
               child: TextField(
+                controller: _identifyEditingController,
                 scrollPadding: const EdgeInsets.all(0.0),
                 onChanged: (value){
                   setState(() {
-                    widget.identifyStrFunc(widget.tabUniqueKey, value);
+                    widget.identifyStrFunc(value);
                   });
                 },
               ),
@@ -228,12 +238,12 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
                 children: [
                   Icon(
                     Icons.power_settings_new_outlined,
-                    color: formatInputEnabled ? Colors.blue : Colors.black,
+                    color: widget.formatInputEnabled ? Colors.blue : Colors.black,
                   ),
                   Text(
                     'Format Input',
                     style: TextStyle(
-                      color: formatInputEnabled ? Colors.blue : Colors.black,
+                      color: widget.formatInputEnabled ? Colors.blue : Colors.black,
                     ),
                   ),
                 ],
