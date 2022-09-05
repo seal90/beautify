@@ -12,7 +12,7 @@ class BeautifyJsonWidget extends StatefulWidget {
 
   String identifyStr;
 
-  Map<String, dynamic> beautifyJsonData = {};
+  dynamic beautifyJsonData = "";
 
   bool formatInputEnabled = false;
 
@@ -78,7 +78,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   }
 
   void _beautifyInput() {
-    String prettyStr = prettyJson(widget.beautifyJsonData, indent: 2);
+    String prettyStr = prettyJson(widget.sourceStr, indent: 2);
 
     _textEditingController.text = prettyStr;
   }
@@ -103,8 +103,8 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         alignment: Alignment.topLeft,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: JsonView.map(
-            widget.beautifyJsonData,
+          child: JsonView.string(
+            widget.sourceStr.isEmpty? "{}": widget.sourceStr,
             theme: const JsonViewTheme(
               keyStyle: TextStyle(
                 color: Colors.black54,
@@ -201,10 +201,12 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   void _toBeautifyJsonData(String text) {
     setState(() {
       if(text.isEmpty) {
-        widget.beautifyJsonData = {};
+        widget.beautifyJsonData = List.empty();
+        widget.sourceStr = "";
       } else {
         try {
           widget.beautifyJsonData = jsonDecode(text);
+          widget.sourceStr = text;
           if(widget.formatInputEnabled) {
             _beautifyInput();
           }
