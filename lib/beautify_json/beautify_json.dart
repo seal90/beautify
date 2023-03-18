@@ -108,50 +108,23 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
 
         alignment: Alignment.topLeft,
         child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+          // scrollDirection: Axis.horizontal,
           child: JsonView.string(
             widget.sourceStr.isEmpty? "{}": widget.sourceStr,
             theme: const JsonViewTheme(
-              keyStyle: TextStyle(
-                color: Colors.black54,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              doubleStyle: TextStyle(
-                color: Colors.purpleAccent,
-                fontSize: 16,
-              ),
-              intStyle: TextStyle(
-                color: Colors.purpleAccent,
-                fontSize: 16,
-              ),
-              stringStyle: TextStyle(
-                color: Colors.purpleAccent,
-                fontSize: 16,
-              ),
-              boolStyle: TextStyle(
-                color: Colors.purpleAccent,
-                fontSize: 16,
-              ),
-              closeIcon: Icon(
-                Icons.arrow_drop_up,
-                color: Colors.purpleAccent,
-                size: 20,
-              ),
-              openIcon: Icon(
-                Icons.arrow_drop_down,
-                color: Colors.purpleAccent,
-                size: 20,
-              ),
-              separator: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Icon(
-                  Icons.arrow_right_alt_outlined,
-                  size: 20,
-                  color: Colors.red,
+                viewType: JsonViewType.collapsible,
+                closeIcon: Icon(
+                  Icons.arrow_drop_down,
+                  size: 18,
+                  color: Colors.black,
                 ),
-              ),
-            ),
+                openIcon: Icon(
+                  Icons.arrow_right,
+                  size: 18,
+                  color: Colors.black,
+                ),
+                separator:Text(' : ',),
+                backgroundColor: Colors.white),
 
           ),
         ),

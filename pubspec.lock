@@ -166,7 +166,7 @@ packages:
       name: flutter_json_view
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.1"
+    version: "1.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:
