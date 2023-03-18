@@ -5,8 +5,11 @@ import 'package:beautify/beautify_interconvert_json_excel/beautify_interconvert_
 import 'package:beautify/beautify_json/beautify_tab_json.dart';
 import 'package:beautify/beautify_storage/beautify_storage.dart';
 import 'package:beautify/beautify_time/beautify_time.dart';
+import 'package:beautify/common.icon/icomoon_icons.dart';
 import 'package:beautify/third_party/adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
+
+import '../beautify_interconvert_json_excel/beautify_interconvert_excel_json.dart';
 
 class BeautifyMainWidget extends StatefulWidget {
 
@@ -39,7 +42,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
         AdaptiveScaffoldDestination(title: 'Time', icon: Icons.access_time),
         AdaptiveScaffoldDestination(title: 'Storage', icon: Icons.storage_outlined),
         AdaptiveScaffoldDestination(title: 'Base64', icon: Icons.backpack_outlined),
-        AdaptiveScaffoldDestination(title: 'Setting', icon: Icons.settings),
+        AdaptiveScaffoldDestination(title: 'Excel', icon: Icomoon.microsoftexcel),
       ],
       body: _pageAtIndex(_pageIndex),
       onNavigationIndexChange: (newIndex) {

@@ -50,7 +50,7 @@ class _BeautifyBase64WidgetState extends State<BeautifyBase64Widget> {
                 color: Colors.lightBlue,
                 child: const Text(">>>"),
                 onPressed: (){
-                  var sourceText = _sourceTextFieldController.text;
+                  var sourceText = _sourceTextFieldController.text.trim();
                   var base64Encoded = const Base64Encoder().convert(utf8.encode(sourceText));
                   _base64TextFieldController.text = base64Encoded;
                 },
@@ -62,7 +62,7 @@ class _BeautifyBase64WidgetState extends State<BeautifyBase64Widget> {
                 color: Colors.lightBlue,
                 child: const Text("<<<"),
                 onPressed: (){
-                  var base64Text = _base64TextFieldController.text;
+                  var base64Text = _base64TextFieldController.text.trim();
                   var sourceText = utf8.decoder.convert(const Base64Decoder().convert(base64Text));
                   _sourceTextFieldController.text = sourceText;
                 },

@@ -78,13 +78,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.5"
-  excel:
+  excel_dart:
     dependency: "direct main"
     description:
-      name: excel
+      name: excel_dart
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-null-safety-3"
+    version: "3.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -412,7 +412,7 @@ packages:
       name: xml
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.4.1"
+    version: "6.1.0"
 sdks:
   dart: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"

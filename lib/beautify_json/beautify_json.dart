@@ -78,9 +78,15 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   }
 
   void _beautifyInput() {
-    String prettyStr = prettyJson(widget.sourceStr, indent: 2);
+    final jsonMap = jsonDecode(widget.sourceStr);
+    JsonEncoder encoder = const JsonEncoder.withIndent(' ');
+    String jsonString = encoder.convert(jsonMap);
 
-    _textEditingController.text = prettyStr;
+    _textEditingController.value = TextEditingValue(
+      text: jsonString,
+      composing: _textEditingController.value.composing,
+      selection: _textEditingController.value.selection,
+    );
   }
 
   void _formatInputEnabledChange() {
