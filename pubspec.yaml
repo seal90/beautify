@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_json_view: ^1.0.0
   pretty_json: 2.0.0
-  tabbed_view: ^1.11.0
+  tabbed_view: ^1.16.0+1
   file_selector: 0.9.2
   excel_dart: 3.0.0
   path_provider: ^2.0.9
