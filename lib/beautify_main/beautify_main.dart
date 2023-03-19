@@ -38,9 +38,9 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
       title: const Text('Beautify Data'),
       currentIndex: _pageIndex,
       destinations: const [
-        AdaptiveScaffoldDestination(title: 'JSON', icon: Icons.brightness_1_outlined),
+        AdaptiveScaffoldDestination(title: 'JSON', icon: Icomoon.json),
         AdaptiveScaffoldDestination(title: 'Time', icon: Icons.access_time),
-        AdaptiveScaffoldDestination(title: 'Storage', icon: Icons.storage_outlined),
+        AdaptiveScaffoldDestination(title: 'Storage', icon: Icomoon.database),
         AdaptiveScaffoldDestination(title: 'Base64', icon: Icons.backpack_outlined),
         AdaptiveScaffoldDestination(title: 'Excel', icon: Icomoon.microsoftexcel),
       ],

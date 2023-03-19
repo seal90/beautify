@@ -12,5 +12,7 @@ class Icomoon {
 
   static const String _fontFamily = 'icomoon';
 
+  static const IconData database = IconData(0xe964, fontFamily: _fontFamily);
+  static const IconData json = IconData(0xe901, fontFamily: _fontFamily);
   static const IconData microsoftexcel = IconData(0xe900, fontFamily: _fontFamily);
 }
