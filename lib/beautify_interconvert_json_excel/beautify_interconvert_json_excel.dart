@@ -23,29 +23,35 @@ class _BeautifyJsonExcelState extends State<BeautifyJsonExcel> {
 
   String savedExcelToJsonFilePath = "";
 
+  String jsonToExcelFileErrorStr = "";
+
+  String excelToJsonFileErrorStr = "";
+
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
-          borderRadius:const BorderRadius.all(
-            Radius.circular(5.0),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.blue),
+            borderRadius:const BorderRadius.all(
+              Radius.circular(5.0),
+            ),
           ),
+          padding: const EdgeInsets.all(5),
+          child: buildJsonToExcel(),
         ),
-        child: buildJsonToExcel(),
-      ),
-      Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
-          borderRadius:const BorderRadius.all(
-            Radius.circular(5.0),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.blue),
+            borderRadius:const BorderRadius.all(
+              Radius.circular(5.0),
+            ),
           ),
+          padding: const EdgeInsets.all(5),
+          child: buildExcelToJson(),
         ),
-        child: buildExcelToJson(),
-      ),
-
-
 
     ],);
   }
@@ -53,29 +59,40 @@ class _BeautifyJsonExcelState extends State<BeautifyJsonExcel> {
   Widget buildExcelToJson() {
 
     return Column(children: [
-      MaterialButton(
+      ElevatedButton(
           child: const Text("选择Excel文件"),
           onPressed: selectExcelToJsonFile
       ),
-      Text("文件保存路径:" + savedExcelToJsonFilePath),
+      Row(
+        children: [
+          const Text("异常信息: "),
+          SelectableText(excelToJsonFileErrorStr),
+        ],
+      ),
+      Row(
+        children: [
+          Text("文件保存路径:" + savedExcelToJsonFilePath),
+        ],
+      ),
+
     ],);
   }
 
   void selectExcelToJsonFile() async {
-    final XTypeGroup typeGroup = XTypeGroup(
-      label: 'text',
-      extensions: <String>['xlsx'],
-    );
-    // final String initialDirectory = (await getApplicationDocumentsDirectory()).path;
-    final XFile? xfile = await openFile(
-      acceptedTypeGroups: <XTypeGroup>[typeGroup],
-      // initialDirectory: initialDirectory,
-    );
-    if (xfile == null) {
-      // Operation was canceled by the user.
-      return;
-    }
     try {
+      final XTypeGroup typeGroup = XTypeGroup(
+        label: 'text',
+        extensions: <String>['xlsx'],
+      );
+      // final String initialDirectory = (await getApplicationDocumentsDirectory()).path;
+      final XFile? xfile = await openFile(
+        acceptedTypeGroups: <XTypeGroup>[typeGroup],
+        // initialDirectory: initialDirectory,
+      );
+      if (xfile == null) {
+        // Operation was canceled by the user.
+        return;
+      }
       final String fileName = xfile.name;
 
       var file = File(xfile.path);
@@ -126,7 +143,9 @@ class _BeautifyJsonExcelState extends State<BeautifyJsonExcel> {
       await saveFile.writeAsString(curJsonObjsStr);
       notifyExcelToJsonSavedPath(saveFileName);
     } catch (e) {
-      print(e);
+      setState(() {
+        excelToJsonFileErrorStr = e.toString();
+      });
     }
   }
 
@@ -138,83 +157,101 @@ class _BeautifyJsonExcelState extends State<BeautifyJsonExcel> {
 
   Widget buildJsonToExcel() {
     return Column(children: [
-      MaterialButton(
+      ElevatedButton(
           child: const Text("选择JSON文件"),
           onPressed: selectJsonToExcelFile
       ),
-      Text("文件保存路径:" + savedJsonToExcelFilePath),
+      Row(
+        children: [
+          const Text("异常信息: "),
+          SelectableText(jsonToExcelFileErrorStr),
+        ],
+      ),
+      Row(
+        children: [
+          Text("文件保存路径:" + savedJsonToExcelFilePath),
+        ],
+      ),
     ],);
   }
 
   void selectJsonToExcelFile() async {
-    final XTypeGroup typeGroup = XTypeGroup(
-      label: 'text',
-      extensions: <String>['txt', 'json'],
-    );
-    // final String initialDirectory = (await getApplicationDocumentsDirectory()).path;
-    final XFile? file = await openFile(
-      acceptedTypeGroups: <XTypeGroup>[typeGroup],
-    // initialDirectory: initialDirectory,
-    );
-    if (file == null) {
-    // Operation was canceled by the user.
-    return;
-    }
-    final String fileName = file.name;
-    final String fileContent = await file.readAsString();
+    try {
+      final XTypeGroup typeGroup = XTypeGroup(
+        label: 'text',
+        extensions: <String>['txt', 'json'],
+      );
+      // final String initialDirectory = (await getApplicationDocumentsDirectory()).path;
+      final XFile? file = await openFile(
+        acceptedTypeGroups: <XTypeGroup>[typeGroup],
+        // initialDirectory: initialDirectory,
+      );
+      if (file == null) {
+        // Operation was canceled by the user.
+        return;
+      }
+      final String fileName = file.name;
+      final String fileContent = await file.readAsString();
 
-    List<dynamic> listContent = jsonDecode(fileContent);
+      List<dynamic> listContent = jsonDecode(fileContent);
 
-    Set<String> headers = Set();
-    for(int i=0;i<listContent.length; i++) {
-      Map<String, dynamic> entity = listContent[i];
-      headers.addAll(entity.keys);
-    }
+      Set<String> headers = Set();
+      for (int i = 0; i < listContent.length; i++) {
+        Map<String, dynamic> entity = listContent[i];
+        headers.addAll(entity.keys);
+      }
 
-    List<String> headersList = List.from(headers);
+      List<String> headersList = List.from(headers);
 
-    var excel = Excel.createExcel();
-    Sheet sheetObject = excel['Sheet1'];
+      var excel = Excel.createExcel();
+      Sheet sheetObject = excel['Sheet1'];
 
-    int columnIndex = 0;
-    int rowIndex = 0;
+      int columnIndex = 0;
+      int rowIndex = 0;
 
-    for(int j = 0; j<headersList.length; j++) {
-      String header = headersList[j];
-      var cell = sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: columnIndex, rowIndex: rowIndex));
-      cell.value = header; // dynamic values support provided;
-      columnIndex++;
-    }
-
-    for(int i=0;i<listContent.length; i++) {
-      Map<String, dynamic> entity = listContent[i];
-
-      columnIndex = 0;
-      rowIndex++;
-      for(int j = 0; j<headersList.length; j++) {
+      for (int j = 0; j < headersList.length; j++) {
         String header = headersList[j];
-        dynamic val = entity[header];
-
-        var cell = sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: columnIndex, rowIndex: rowIndex));
-        cell.value = val; // dynamic values support provided;
-
+        var cell = sheetObject.cell(CellIndex.indexByColumnRow(
+            columnIndex: columnIndex, rowIndex: rowIndex));
+        cell.value = header; // dynamic values support provided;
         columnIndex++;
       }
 
+      for (int i = 0; i < listContent.length; i++) {
+        Map<String, dynamic> entity = listContent[i];
+
+        columnIndex = 0;
+        rowIndex++;
+        for (int j = 0; j < headersList.length; j++) {
+          String header = headersList[j];
+          dynamic val = entity[header];
+
+          var cell = sheetObject.cell(CellIndex.indexByColumnRow(
+              columnIndex: columnIndex, rowIndex: rowIndex));
+          cell.value = null == val ? val : val.toString(); // dynamic values support provided;
+
+          columnIndex++;
+        }
+      }
+
+      var fileBytes = excel.save()!;
+
+      String saveFileName = fileName + "_to_excel.xlsx";
+
+      final String initialDirectory =
+          (await getDownloadsDirectory())!.path;
+      String saveFilePath = initialDirectory + "/" + saveFileName;
+
+      const String mimeType = 'text/plain';
+      final XFile textFile = XFile.fromData(
+          Uint8List.fromList(fileBytes), name: saveFileName);
+      await textFile.saveTo(saveFilePath);
+      notifyJsonToExcelSavedPath(saveFilePath);
+    } catch (e) {
+      setState(() {
+        jsonToExcelFileErrorStr = e.toString();
+      });
     }
-
-    var fileBytes = excel.save()!;
-
-    String saveFileName = fileName + "_to_excel.xlsx";
-
-    final String initialDirectory =
-        (await getDownloadsDirectory())!.path;
-    String saveFilePath = initialDirectory + "/" +saveFileName;
-
-    const String mimeType = 'text/plain';
-    final XFile textFile = XFile.fromData(Uint8List.fromList(fileBytes), name: saveFileName);
-    await textFile.saveTo(saveFilePath);
-    notifyJsonToExcelSavedPath(saveFilePath);
 
     // File("/Users/seal/Downloads/002_json.xlsx")
     //   ..createSync(recursive: true)
