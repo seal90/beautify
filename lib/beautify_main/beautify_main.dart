@@ -3,13 +3,12 @@
 import 'package:beautify/beautify_base64/beautify_base64.dart';
 import 'package:beautify/beautify_interconvert_json_excel/beautify_interconvert_json_excel.dart';
 import 'package:beautify/beautify_json/beautify_tab_json.dart';
+import 'package:beautify/beautify_json_diff/beautify_json_diff.dart';
 import 'package:beautify/beautify_storage/beautify_storage.dart';
 import 'package:beautify/beautify_time/beautify_time.dart';
 import 'package:beautify/common.icon/icomoon_icons.dart';
 import 'package:beautify/third_party/adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-
-import '../beautify_interconvert_json_excel/beautify_interconvert_excel_json.dart';
 
 class BeautifyMainWidget extends StatefulWidget {
 
@@ -43,6 +42,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
         AdaptiveScaffoldDestination(title: 'Storage', icon: Icomoon.database),
         AdaptiveScaffoldDestination(title: 'Base64', icon: Icons.backpack_outlined),
         AdaptiveScaffoldDestination(title: 'Excel', icon: Icomoon.microsoftexcel),
+        AdaptiveScaffoldDestination(title: 'JSON Diff', icon: Icons.compare),
       ],
       body: _pageAtIndex(_pageIndex),
       onNavigationIndexChange: (newIndex) {
@@ -58,6 +58,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
   final _beautifyJsonWidget = BeautifyTabJsonWidget();
   final _beautifyTimeWidget = const BeautifyTimeWidget();
   final _beautifyStorageWidget = const BeautifyStorageWidget();
+  final _beautifyJsonDiffWidget = BeautifyJsonDiffWidget();
 
   Widget _pageAtIndex(int index) {
     if (index == 0) {
@@ -78,6 +79,10 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
 
     if(index == 4) {
       return BeautifyJsonExcel();
+    }
+
+    if(index == 5) {
+      return _beautifyJsonDiffWidget;
     }
 
     return const Text("setting");
