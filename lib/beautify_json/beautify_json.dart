@@ -43,7 +43,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
     try {
       jsonDecode(widget.sourceStr);
       viewStr = widget.sourceStr;
-    }catch(e) {
+    } catch(e) {
 
     }
   }
@@ -224,17 +224,24 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
               ),
             ),
             MaterialButton(
+              minWidth: 10,
+              child: const Icon(Icons.compress),
+              onPressed: (){
+                try{
+                  var decodeStr = jsonDecode(widget.sourceStr);
+                  var encodeStr = jsonEncode(decodeStr);
+                  _textEditingController.text = encodeStr;
+                } catch(e) {}
+
+              },
+            ),
+            MaterialButton(
+              minWidth: 10,
               child: Row(
                 children: [
                   Icon(
-                    Icons.power_settings_new_outlined,
+                    Icons.format_paint_sharp,
                     color: widget.formatInputEnabled ? Colors.blue : Colors.black,
-                  ),
-                  Text(
-                    'Format Input',
-                    style: TextStyle(
-                      color: widget.formatInputEnabled ? Colors.blue : Colors.black,
-                    ),
                   ),
                 ],
               ),
