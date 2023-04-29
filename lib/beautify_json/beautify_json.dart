@@ -33,11 +33,19 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
 
   final TextEditingController _identifyEditingController = TextEditingController();
 
+  String viewStr = "";
+
   @override
   void initState() {
     super.initState();
     _identifyEditingController.text = widget.identifyStr;
     _textEditingController.text = widget.sourceStr;
+    try {
+      jsonDecode(widget.sourceStr);
+      viewStr = widget.sourceStr;
+    } finally {
+
+    }
   }
 
   @override
@@ -110,7 +118,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         child: SingleChildScrollView(
           // scrollDirection: Axis.horizontal,
           child: JsonView.string(
-            widget.sourceStr.isEmpty? "{}": widget.sourceStr,
+            viewStr.isEmpty? "{}": viewStr,
             theme: const JsonViewTheme(
                 viewType: JsonViewType.collapsible,
                 closeIcon: Icon(
@@ -184,8 +192,9 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         widget.sourceStr = "";
       } else {
         try {
-          widget.beautifyJsonData = jsonDecode(text);
           widget.sourceStr = text;
+          widget.beautifyJsonData = jsonDecode(text);
+          viewStr = text;
           if(widget.formatInputEnabled) {
             _beautifyInput();
           }
