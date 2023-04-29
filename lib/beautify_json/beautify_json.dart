@@ -43,7 +43,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
     try {
       jsonDecode(widget.sourceStr);
       viewStr = widget.sourceStr;
-    } finally {
+    }catch(e) {
 
     }
   }
