@@ -4,6 +4,7 @@ import 'package:beautify/beautify_base64/beautify_base64.dart';
 import 'package:beautify/beautify_interconvert_json_excel/beautify_interconvert_json_excel.dart';
 import 'package:beautify/beautify_json/beautify_tab_json.dart';
 import 'package:beautify/beautify_json_diff/beautify_json_diff.dart';
+import 'package:beautify/beautify_barcode/beautify_barcode.dart';
 import 'package:beautify/beautify_storage/beautify_storage.dart';
 import 'package:beautify/beautify_time/beautify_time.dart';
 import 'package:beautify/common.icon/icomoon_icons.dart';
@@ -43,6 +44,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
         AdaptiveScaffoldDestination(title: 'Base64', icon: Icons.backpack_outlined),
         AdaptiveScaffoldDestination(title: 'Excel', icon: Icomoon.microsoftexcel),
         AdaptiveScaffoldDestination(title: 'JSON Diff', icon: Icons.compare),
+        AdaptiveScaffoldDestination(title: 'Barcode', icon: Icons.barcode_reader),
       ],
       body: _pageAtIndex(_pageIndex),
       onNavigationIndexChange: (newIndex) {
@@ -85,6 +87,9 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
       return _beautifyJsonDiffWidget;
     }
 
+    if(index == 6) {
+      return BeautifyBarcodeWidget();
+    }
     return const Text("setting");
   }
 
