@@ -18,9 +18,143 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:barcode/barcode.dart';
+import 'package:beautify/beautify_barcode/barcode_conf.dart';
+import 'package:buffer_image/buffer_image.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:zxing_lib/common.dart';
+import 'package:zxing_lib/multi.dart';
+import 'package:zxing_lib/zxing.dart';
 
 import 'painter.dart';
+
+class BarcodeParseWidget extends StatefulWidget {
+
+  BarcodeParseWidget({Key? key, required this.conf});
+
+  final BarcodeConf conf;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _BarcodeParseWidgetState();
+  }
+}
+
+class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
+
+  Image? _image;
+
+  List<SelectableText> _parsedText = [];
+
+  String _parseErrInfo = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Row(children: [
+          const Text("Parsed value is:"),
+          Text(_parseErrInfo, style: const TextStyle(color: Colors.red),)
+        ],
+      ),
+      Row(
+        children: _parsedText,
+      ),
+      ElevatedButton(
+        child: const Text("选择图片"),
+        onPressed: selectImage,
+      ),
+      Row(),
+      SizedBox(
+        width: 500,
+        height: 500,
+        child: _image,),
+    ],);
+  }
+
+  void selectImage() async {
+
+    setState(() {
+      _image = null;
+      _parsedText = [];
+      _parseErrInfo = "";
+    });
+
+    XTypeGroup typeGroup = const XTypeGroup(
+      label: 'Image',
+      extensions: <String>['jpg', 'jpeg', 'png', 'svg'],
+    );
+
+    final XFile? file = await openFile(
+      acceptedTypeGroups: <XTypeGroup>[typeGroup],
+      // initialDirectory: initialDirectory,
+    );
+    if (file == null) {
+      // Operation was canceled by the user.
+      return;
+    }
+
+
+    Uint8List imageBytes = await file.readAsBytes();
+    setState(() {
+      _image = Image.memory(imageBytes);
+    });
+
+    BufferImage? image = await BufferImage.fromFile(imageBytes);
+    if (image == null) {
+      return;
+    }
+    int imageWidth = image.width;
+    int imageHeight = image.height;
+    final pixels = Uint8List(imageWidth * imageHeight);
+    for (int i = 0; i < pixels.length; i++) {
+      pixels[i] = getLuminanceSourcePixel(image.buffer, i * 4);
+    }
+
+    final imageSource = RGBLuminanceSource.orig(
+      imageWidth,
+      imageHeight,
+      pixels,
+    );
+
+    final bitmap = BinaryBitmap(HybridBinarizer(imageSource));
+
+    final reader = GenericMultipleBarcodeReader(MultiFormatReader());
+    Map<DecodeHintType, Object>? hints = {DecodeHintType.POSSIBLE_FORMATS:[BarcodeFormat.QR_CODE]};
+    try {
+      var results = reader.decodeMultiple(
+        bitmap,
+        hints,
+      );
+
+      List<SelectableText> parsedText = [];
+      for (var element in results) {
+        parsedText.add(SelectableText(element.text));
+      }
+      setState(() {
+        _parsedText = parsedText;
+      });
+
+    } on Exception catch (e) {
+      setState(() {
+        _parseErrInfo = e.toString();
+      });
+    }
+
+    // Print the decoded text
+  }
+
+}
+
+int getLuminanceSourcePixel(List<int> byte, int index) {
+  if (byte.length <= index + 3) {
+    return 0xff;
+  }
+  final r = byte[index] & 0xff; // red
+  final g2 = (byte[index + 1] << 1) & 0x1fe; // 2 * green
+  final b = byte[index + 2]; // blue
+  // Calculate green-favouring average cheaply
+  return ((r + g2 + b) ~/ 4);
+}
 
 /// Error builder callback
 typedef BarcodeErrorBuilder = Widget Function(

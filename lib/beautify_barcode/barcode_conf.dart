@@ -17,10 +17,20 @@
 import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 
+enum GenerateOrParse {
+
+  /// generate barcode
+  generate,
+
+  /// parse barcode
+  parse,
+}
+
 /// Barcode configuration
 class BarcodeConf extends ChangeNotifier {
-  BarcodeConf([BarcodeType initialType = BarcodeType.Code128]) {
+  BarcodeConf([BarcodeType initialType = BarcodeType.QrCode]) {
     type = initialType;
+    generateOrParse = GenerateOrParse.generate;
   }
 
   String? _data;
@@ -52,6 +62,8 @@ class BarcodeConf extends ChangeNotifier {
 
   late BarcodeType _type;
 
+  late GenerateOrParse _generateOrParse;
+
   /// Size of the font
   double fontSize = 30;
 
@@ -69,6 +81,8 @@ class BarcodeConf extends ChangeNotifier {
 
   /// Barcode type
   BarcodeType get type => _type;
+
+  GenerateOrParse get generateOrParse => _generateOrParse;
 
   set type(BarcodeType value) {
     _type = value;
@@ -246,6 +260,11 @@ class BarcodeConf extends ChangeNotifier {
         break;
     }
 
+    notifyListeners();
+  }
+
+  set generateOrParse(GenerateOrParse generateOrParse) {
+    _generateOrParse = generateOrParse;
     notifyListeners();
   }
 }

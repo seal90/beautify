@@ -35,6 +35,43 @@ class BarcodeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return conf.generateOrParse == GenerateOrParse.generate ?
+    BarcodeGenerateView(conf: conf,) : BarcodeParseView(conf: conf,);
+  }
+}
+
+class BarcodeParseView extends StatelessWidget {
+  const BarcodeParseView({
+    Key? key,
+    required this.conf,
+  }) : super(key: key);
+
+  final BarcodeConf conf;
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+        child: Card(
+          child: BarcodeParseWidget(conf: conf,),
+        ),
+      ),
+    );
+  }
+}
+
+class BarcodeGenerateView extends StatelessWidget {
+  const BarcodeGenerateView({
+    Key? key,
+    required this.conf,
+  }) : super(key: key);
+
+  final BarcodeConf conf;
+
+  @override
+  Widget build(BuildContext context) {
     try {
       conf.barcode.verify(conf.normalizedData);
     } on BarcodeException catch (error) {
@@ -61,7 +98,7 @@ class BarcodeView extends StatelessWidget {
                   vertical: 20,
                 ),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(
@@ -77,7 +114,6 @@ class BarcodeView extends StatelessWidget {
     );
   }
 }
-
 
 /// Store the width and height of a rendered text
 class BitmapFontMetrics {
