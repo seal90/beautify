@@ -35,16 +35,20 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
 
   String viewStr = "";
 
+  String parseInfo = "";
+
   @override
   void initState() {
     super.initState();
     _identifyEditingController.text = widget.identifyStr;
     _textEditingController.text = widget.sourceStr;
     try {
-      jsonDecode(widget.sourceStr);
-      viewStr = widget.sourceStr;
+      if(widget.sourceStr.isNotEmpty) {
+        jsonDecode(widget.sourceStr);
+        viewStr = widget.sourceStr;
+      }
     } catch(e) {
-
+      parseInfo = e.toString();
     }
   }
 
@@ -106,7 +110,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   Widget _viewJsonView() {
 
     return Expanded(
-      child: Container(
+      child:  Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
           borderRadius:const BorderRadius.all(
@@ -115,30 +119,39 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         ),
 
         alignment: Alignment.topLeft,
-        child: SingleChildScrollView(
-          // scrollDirection: Axis.horizontal,
-          child: JsonView.string(
-            viewStr.isEmpty? "{}": viewStr,
-            theme: const JsonViewTheme(
-                viewType: JsonViewType.collapsible,
-                closeIcon: Icon(
-                  Icons.arrow_drop_down,
-                  size: 18,
-                  color: Colors.black,
-                ),
-                openIcon: Icon(
-                  Icons.arrow_right,
-                  size: 18,
-                  color: Colors.black,
-                ),
-                separator:Text(' : ',),
-                backgroundColor: Colors.white),
-
-          ),
-        ),
+        child: parseInfo.isNotEmpty ? SelectableText(parseInfo, style: const TextStyle(color: Colors.red),) : _showJsonView()
       ),
     );
   }
+
+  Widget _showJsonView() {
+    try {
+      return SingleChildScrollView(
+        // scrollDirection: Axis.horizontal,
+        child: JsonView.string(
+          viewStr.isEmpty ? "{}" : viewStr,
+          theme: const JsonViewTheme(
+              viewType: JsonViewType.collapsible,
+              closeIcon: Icon(
+                Icons.arrow_drop_down,
+                size: 18,
+                color: Colors.black,
+              ),
+              openIcon: Icon(
+                Icons.arrow_right,
+                size: 18,
+                color: Colors.black,
+              ),
+              separator: Text(' : ',),
+              backgroundColor: Colors.white),
+
+        ),
+      );
+    } catch (e) {
+      return SelectableText(e.toString(), style: const TextStyle(color: Colors.red),);
+    }
+  }
+
 
   Widget _viewJsonConfigView() {
     return Row(
@@ -187,6 +200,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
 
   void _toBeautifyJsonData(String text) {
     setState(() {
+      parseInfo = "";
       if(text.isEmpty) {
         widget.beautifyJsonData = List.empty();
         widget.sourceStr = "";
@@ -199,7 +213,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
             _beautifyInput();
           }
         } catch (e) {
-
+          parseInfo = e.toString();
         }
       }
     });
@@ -228,10 +242,13 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
               child: const Icon(Icons.compress),
               onPressed: (){
                 try{
+                  parseInfo = "";
                   var decodeStr = jsonDecode(widget.sourceStr);
                   var encodeStr = jsonEncode(decodeStr);
                   _textEditingController.text = encodeStr;
-                } catch(e) {}
+                } catch(e) {
+                  parseInfo = e.toString();
+                }
 
               },
             ),
