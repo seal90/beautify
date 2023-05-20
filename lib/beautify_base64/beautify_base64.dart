@@ -19,9 +19,25 @@ class _BeautifyBase64WidgetState extends State<BeautifyBase64Widget> {
   final _sourceTextFieldController = TextEditingController();
 
   final _base64TextFieldController = TextEditingController();
+  
+  String errInfo = "";
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          child: errInfo.isEmpty ? null : SelectableText(errInfo, style: const TextStyle(color: Colors.red),),
+        ),
+        Flexible(
+          child: buildTranslate(),
+        ),
+
+      ],
+    );
+  }
+
+  Widget buildTranslate() {
     return Row(
       children: [
         Flexible(
@@ -50,9 +66,18 @@ class _BeautifyBase64WidgetState extends State<BeautifyBase64Widget> {
                 color: Colors.lightBlue,
                 child: const Text(">>>"),
                 onPressed: (){
-                  var sourceText = _sourceTextFieldController.text.trim();
-                  var base64Encoded = const Base64Encoder().convert(utf8.encode(sourceText));
-                  _base64TextFieldController.text = base64Encoded;
+                  errInfo = "";
+                  try {
+                    var sourceText = _sourceTextFieldController.text.trim();
+                    var base64Encoded = const Base64Encoder().convert(
+                        utf8.encode(sourceText));
+                    _base64TextFieldController.text = base64Encoded;
+                  } catch (e) {
+                    errInfo = e.toString();
+                  }
+                  setState(() {
+                    errInfo;
+                  });
                 },
               ),
               const SizedBox(
@@ -62,9 +87,18 @@ class _BeautifyBase64WidgetState extends State<BeautifyBase64Widget> {
                 color: Colors.lightBlue,
                 child: const Text("<<<"),
                 onPressed: (){
-                  var base64Text = _base64TextFieldController.text.trim();
-                  var sourceText = utf8.decoder.convert(const Base64Decoder().convert(base64Text));
-                  _sourceTextFieldController.text = sourceText;
+                  errInfo = "";
+                  try {
+                    var base64Text = _base64TextFieldController.text.trim();
+                    var sourceText = utf8.decoder.convert(
+                        const Base64Decoder().convert(base64Text));
+                    _sourceTextFieldController.text = sourceText;
+                  } catch (e) {
+                    errInfo = e.toString();
+                  }
+                  setState(() {
+                    errInfo;
+                  });
                 },
               ),
             ],
@@ -91,5 +125,4 @@ class _BeautifyBase64WidgetState extends State<BeautifyBase64Widget> {
       ],
     );
   }
-
 }
