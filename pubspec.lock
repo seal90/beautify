@@ -214,14 +214,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_json_view:
-    dependency: "direct main"
-    description:
-      name: flutter_json_view
-      sha256: "4adc84e96c8bbd1ee874c5b8a3f6a404edccab9757a12edcde4c45c382b95214"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -288,6 +280,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.1"
+  json_view:
+    dependency: "direct main"
+    description:
+      name: json_view
+      sha256: "905c69f9e69d1eab5406b87ab6c10c3706c04c70c6a4959621bd2b43c2d27374"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.2"
   lints:
     dependency: transitive
     description:

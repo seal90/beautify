@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_json_view/flutter_json_view.dart';
+import 'package:json_view/json_view.dart';
+// import 'package:flutter_json_view/flutter_json_view.dart';
 import 'package:pretty_json/pretty_json.dart';
 
 
@@ -126,26 +127,30 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
 
   Widget _showJsonView() {
     try {
+      final jsonVal = jsonDecode(viewStr.isEmpty ? "{}" : viewStr);
+      // json: viewStr.isEmpty ? "{}" : viewStr
+      return JsonView(json: jsonVal,);
       return SingleChildScrollView(
         // scrollDirection: Axis.horizontal,
-        child: JsonView.string(
-          viewStr.isEmpty ? "{}" : viewStr,
-          theme: const JsonViewTheme(
-              viewType: JsonViewType.collapsible,
-              closeIcon: Icon(
-                Icons.arrow_drop_down,
-                size: 18,
-                color: Colors.black,
-              ),
-              openIcon: Icon(
-                Icons.arrow_right,
-                size: 18,
-                color: Colors.black,
-              ),
-              separator: Text(' : ',),
-              backgroundColor: Colors.white),
-
-        ),
+        child: JsonView(json: jsonVal,),
+        // child: JsonView.string(
+        //   viewStr.isEmpty ? "{}" : viewStr,
+        //   theme: const JsonViewTheme(
+        //       viewType: JsonViewType.collapsible,
+        //       closeIcon: Icon(
+        //         Icons.arrow_drop_down,
+        //         size: 18,
+        //         color: Colors.black,
+        //       ),
+        //       openIcon: Icon(
+        //         Icons.arrow_right,
+        //         size: 18,
+        //         color: Colors.black,
+        //       ),
+        //       separator: Text(' : ',),
+        //       backgroundColor: Colors.white),
+        //
+        // ),
       );
     } catch (e) {
       return SelectableText(e.toString(), style: const TextStyle(color: Colors.red),);
@@ -157,8 +162,8 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
     return Row(
       children: [
         MaterialButton(
-          child: Row(
-            children: const [
+          child: const Row(
+            children: [
               Icon(Icons.copy),
               Text("Copy Json"),
             ],
@@ -201,6 +206,7 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
   void _toBeautifyJsonData(String text) {
     setState(() {
       parseInfo = "";
+      viewStr = text;
       if(text.isEmpty) {
         widget.beautifyJsonData = List.empty();
         widget.sourceStr = "";
@@ -208,7 +214,6 @@ class _BeautifyJsonWidgetState extends State<BeautifyJsonWidget> {
         try {
           widget.sourceStr = text;
           widget.beautifyJsonData = jsonDecode(text);
-          viewStr = text;
           if(widget.formatInputEnabled) {
             _beautifyInput();
           }
