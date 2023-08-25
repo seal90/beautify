@@ -64,6 +64,8 @@ class BarcodeConf extends ChangeNotifier {
 
   late GenerateOrParse _generateOrParse;
 
+  BarcodeParseData? barcodeParseData;
+
   /// Size of the font
   double fontSize = 30;
 
@@ -267,4 +269,16 @@ class BarcodeConf extends ChangeNotifier {
     _generateOrParse = generateOrParse;
     notifyListeners();
   }
+}
+
+class BarcodeParseData {
+
+  BarcodeParseData(): parsedText = [], parseErrInfo = "";
+
+  Image? image;
+
+  List<String> parsedText;
+
+  String parseErrInfo;
+
 }

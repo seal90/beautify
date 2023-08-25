@@ -43,50 +43,49 @@ class BarcodeParseWidget extends StatefulWidget {
 
 class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
 
-  Image? _image;
-
-  List<String> _parsedText = [];
-
-  String _parseErrInfo = "";
-
   @override
   Widget build(BuildContext context) {
+    BarcodeParseData? barcodeParseData = widget.conf.barcodeParseData;
+    barcodeParseData = barcodeParseData?? BarcodeParseData();
     return Column(children: [
       Row(children: [
           const Text("Parsed value is:"),
-          Text(_parseErrInfo, style: const TextStyle(color: Colors.red),)
+          Text(barcodeParseData.parseErrInfo, style: const TextStyle(color: Colors.red),)
         ],
       ),
-      Row(
-        children: _parsedText.map((e){
+      Column(
+        children: barcodeParseData.parsedText.map((e){
           return Row(children: [
-            SelectableText(e),
             IconButton(
                 hoverColor: Colors.transparent,
                 onPressed: (){Clipboard.setData(ClipboardData(text: e));},
                 icon: const Icon(Icons.copy)),
+            Expanded(child:
+            SelectableText(
+              e,
+              // style: TextStyle(overflow: TextOverflow.ellipsis),
+              maxLines: 1,
+              scrollPhysics: const AlwaysScrollableScrollPhysics(),
+            ))
           ],);
         }).toList(),
       ),
-
       ElevatedButton(
         child: const Text("选择图片"),
         onPressed: selectImage,
       ),
-      Row(),
+
       SizedBox(
         width: 500,
         height: 500,
-        child: _image,),
+        child: barcodeParseData.image,),
     ],);
   }
 
   void selectImage() async {
 
     setState(() {
-      _image = null;
-      _parsedText = [];
-      _parseErrInfo = "";
+      widget.conf.barcodeParseData = BarcodeParseData();
     });
 
     XTypeGroup typeGroup = const XTypeGroup(
@@ -106,7 +105,11 @@ class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
 
     Uint8List imageBytes = await file.readAsBytes();
     setState(() {
-      _image = Image.memory(imageBytes);
+      BarcodeParseData? barcodeParseData = widget.conf.barcodeParseData;
+      if(null == barcodeParseData) {
+        widget.conf.barcodeParseData = BarcodeParseData();
+      }
+      widget.conf.barcodeParseData!.image = Image.memory(imageBytes);
     });
 
     BufferImage? image = await BufferImage.fromFile(imageBytes);
@@ -141,12 +144,20 @@ class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
         parsedText.add(element.text);
       }
       setState(() {
-        _parsedText = parsedText;
+        BarcodeParseData? barcodeParseData = widget.conf.barcodeParseData;
+        if(null == barcodeParseData) {
+          widget.conf.barcodeParseData = BarcodeParseData();
+        }
+        widget.conf.barcodeParseData!.parsedText = parsedText;
       });
 
     } on Exception catch (e) {
       setState(() {
-        _parseErrInfo = e.toString();
+        BarcodeParseData? barcodeParseData = widget.conf.barcodeParseData;
+        if(null == barcodeParseData) {
+          widget.conf.barcodeParseData = BarcodeParseData();
+        }
+        widget.conf.barcodeParseData!.parseErrInfo = e.toString();
       });
     }
 

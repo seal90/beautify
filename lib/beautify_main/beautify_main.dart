@@ -61,6 +61,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
   final _beautifyTimeWidget = const BeautifyTimeWidget();
   final _beautifyStorageWidget = const BeautifyStorageWidget();
   final _beautifyJsonDiffWidget = BeautifyJsonDiffWidget();
+  final _beautifyBarcodeWidget = BeautifyBarcodeWidget();
 
   Widget _pageAtIndex(int index) {
     if (index == 0) {
@@ -88,7 +89,7 @@ class _BeautifyMainWidgetState extends State<BeautifyMainWidget> with TickerProv
     }
 
     if(index == 6) {
-      return BeautifyBarcodeWidget();
+      return _beautifyBarcodeWidget;
     }
     return const Text("setting");
   }

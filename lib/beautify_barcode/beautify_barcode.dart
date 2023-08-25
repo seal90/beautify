@@ -6,7 +6,7 @@ import 'package:beautify/beautify_barcode/settings.dart';
 import 'package:flutter/material.dart';
 
 class BeautifyBarcodeWidget extends StatefulWidget {
-
+  final BarcodeConf conf = BarcodeConf();
   @override
   State<StatefulWidget> createState() {
     return _BeautifyBarcodeWidgetState();
@@ -15,17 +15,17 @@ class BeautifyBarcodeWidget extends StatefulWidget {
 }
 
 class _BeautifyBarcodeWidgetState extends State<BeautifyBarcodeWidget> {
-  final BarcodeConf conf = BarcodeConf();
+
 
   @override
   void initState() {
-    conf.addListener(confListener);
+    widget.conf.addListener(confListener);
     super.initState();
   }
 
   @override
   void dispose() {
-    conf.removeListener(confListener);
+    widget.conf.removeListener(confListener);
     super.dispose();
   }
 
@@ -37,9 +37,9 @@ class _BeautifyBarcodeWidgetState extends State<BeautifyBarcodeWidget> {
   Widget build(BuildContext context) {
     return ListView(
         children: <Widget>[
-          Settings(conf: conf),
-          BarcodeView(conf: conf),
-          BarcodeInfo(conf: conf),
+          Settings(conf: widget.conf),
+          BarcodeView(conf: widget.conf),
+          BarcodeInfo(conf: widget.conf),
         ],
 
     );
