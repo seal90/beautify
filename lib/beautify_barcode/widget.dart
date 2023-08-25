@@ -22,6 +22,7 @@ import 'package:beautify/beautify_barcode/barcode_conf.dart';
 import 'package:buffer_image/buffer_image.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zxing_lib/common.dart';
 import 'package:zxing_lib/multi.dart';
 import 'package:zxing_lib/zxing.dart';
@@ -44,7 +45,7 @@ class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
 
   Image? _image;
 
-  List<SelectableText> _parsedText = [];
+  List<String> _parsedText = [];
 
   String _parseErrInfo = "";
 
@@ -57,8 +58,17 @@ class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
         ],
       ),
       Row(
-        children: _parsedText,
+        children: _parsedText.map((e){
+          return Row(children: [
+            SelectableText(e),
+            IconButton(
+                hoverColor: Colors.transparent,
+                onPressed: (){Clipboard.setData(ClipboardData(text: e));},
+                icon: const Icon(Icons.copy)),
+          ],);
+        }).toList(),
       ),
+
       ElevatedButton(
         child: const Text("选择图片"),
         onPressed: selectImage,
@@ -126,9 +136,9 @@ class _BarcodeParseWidgetState extends State<BarcodeParseWidget> {
         hints,
       );
 
-      List<SelectableText> parsedText = [];
+      List<String> parsedText = [];
       for (var element in results) {
-        parsedText.add(SelectableText(element.text));
+        parsedText.add(element.text);
       }
       setState(() {
         _parsedText = parsedText;
